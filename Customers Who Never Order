@@ -1,0 +1,8 @@
+create table cust(id int , 
+name varchar(22));
+insert into cust values(1,'Joe'),(2,'Henry'),(3,'Sam'),(4,'Max');
+
+create table orders(id int,custid int);
+insert into orders values(1,3),(2,1);
+
+select name from cust where name not in(select name from cust c inner join orders o on o.custid=c.id )
