@@ -1,0 +1,8 @@
+create table pers (id int ,
+email varchar(22));
+insert into pers values(1,'a@b.com'),(2,'c@d.com'),(3,'a@b.com');
+
+
+
+with cte as(select *, row_number() over(partition by email) as rn from pers)
+select * from cte where rn>1
