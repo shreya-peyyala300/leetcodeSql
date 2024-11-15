@@ -1,0 +1,7 @@
+select id,student as original_seating,
+case
+when id%2 =1 then coalesce(lead(student)over(order by id),student)
+when id%2=0 then coalesce(lag(student)over (order by id),student)
+else student
+end as Exchange_seating
+from students
