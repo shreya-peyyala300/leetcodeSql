@@ -1,0 +1,1 @@
+select emp_id ,fname,lname,dept_id Group_concat(strength) as strength from employee group by emp_id;
