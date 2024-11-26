@@ -1,0 +1,28 @@
+--------+------------+---------------------+---------------------+------------------+-------------+
+| userid | session_id | session_start_time  | session_end_time    | session_duration | event_count |
++--------+------------+---------------------+---------------------+------------------+-------------+
+|      1 |          1 | 2023-09-10 09:00:00 | 2023-09-10 09:00:00 |                0 |           1 |
+|      1 |          2 | 2023-09-10 10:00:00 | 2023-09-10 10:50:00 |               50 |           3 |
+|      1 |          3 | 2023-09-10 11:40:00 | 2023-09-10 11:40:00 |                0 |           1 |
+|      1 |          4 | 2023-09-10 12:40:00 | 2023-09-10 12:50:00 |               10 |           2 |
+|      2 |          1 | 2023-09-10 09:00:00 | 2023-09-10 09:20:00 |               20 |           2 |
+|      2 |          2 | 2023-09-10 10:30:00 | 2023-09-10 10:30:00 |                0 |           1 |
++--------+------------+---------------------+---------------------+------------------+-------------+
+
+with cte as (
+select *
+, LAG(event_time,1,event_time) over(partition by userid order by event_time) as prev_event_time
+,TIMESTAMPDIFF(minute,lag(event_time,1,event_time) over(partition by userid order by event_time),event_time) as time_diff
+from events
+)
+, cte2 as (
+select userid,event_type,prev_event_time,event_time
+,case when time_diff <=30 then 0 else 1 end as flag
+,sum(case when time_diff <=30 then 0 else 1 end) over (partition by userid order by event_time) as group_id
+from cte)
+select userid,ROW_NUMBER() over(partition by userid order by min(event_time)) as session_id
+,MIN(event_time) as session_start_time,MAX(event_time) as session_end_time
+,TIMESTAMPDIFF(MINUTE,min(event_time),MAX(event_time)) as session_duration
+,count(*) as event_count
+from cte2
+group by userid,group_id;
