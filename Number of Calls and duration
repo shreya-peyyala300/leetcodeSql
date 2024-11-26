@@ -1,3 +1,12 @@
-with cte1 as(select case when from_id<to_id then from_id else to_id end person1,
-case when from_id<to_id then to_id else from_id end Person2 From calls)
-select person1,person2,count(1) as call_count,sum(duration)as total_duration from cte1 group by person1,person2
+with cte1 as(
+select 
+case
+when from_id<to_id then from_id else to_id end person1,
+case
+when from_id<to_id then to_id else from_id end Person2 
+From calls)
+
+select
+person1,person2,count(1) as call_count,sum(duration)as total_duration
+from cte1 
+group by person1,person2
