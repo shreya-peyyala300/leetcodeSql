@@ -4,7 +4,7 @@ BEGIN
 RETURN(
 with cte as(
 select *, Dense_Rank() Over(Order By Salary Desc)as rnk from Employee)
-select DISTINCT salary
+select DISTINCT IFNULL(salary,null)
 from cte 
 where rnk=N
 )
