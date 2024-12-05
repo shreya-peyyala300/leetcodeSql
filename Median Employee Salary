@@ -1,0 +1,6 @@
+with cte as(
+select * , ROW_NUMBER() Over(Partition by company order by salary)as rnk,count(id) over(Partition by company) as n
+from employee)
+select id,company,salary from cte 
+where rnk BETWEEN n/2 and (n/2)+1
+)
