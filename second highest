@@ -1,0 +1,2 @@
+with cte as(select * , Dense_Rank() Over(order by salary DESC)as r from Employee)
+select ifnull((select salary from cte where r=2 limit 1),null) as SecondHighest
