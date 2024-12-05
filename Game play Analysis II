@@ -1,0 +1,6 @@
+with cte as(
+select * , ROW_Number() Over(Partition By player_id order by event_date) as rnk from Activity)
+select player_id,device
+from cte 
+where rnk=1
+)
