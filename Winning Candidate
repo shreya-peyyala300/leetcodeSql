@@ -1,0 +1,17 @@
+1 A
+2 B
+3 C
+4 D
+5 E
+
+vote table 
+1 2 
+2 4 
+3 3
+4 2
+5 5
+
+with cte as(select candidateId from vote
+group by candidateId order by count()id desc limit 1)
+
+select name from Candidate where id IN(select candidateId from cte)
