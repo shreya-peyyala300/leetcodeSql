@@ -1,0 +1,12 @@
+CREATE FUNCTION getNthHighestSalary (N INT)
+RETURNS INT
+BEGIN 
+RETURN(
+with cte as(
+select *, Dense_Rank() Over(Order By Salary Desc)as rnk from Employee)
+select DISTINCT salary
+from cte 
+where rnk=N
+)
+);
+END
